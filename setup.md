@@ -53,4 +53,6 @@ Check the main README.md for more detailed instructions.
 2. In the project **Settings → Environment Variables**, add:
    - `GITHUB_TOKEN` = your GitHub Personal Access Token (same scopes: read:user, read:email, read:org).
 3. Redeploy. The app uses server actions, so the token is only used on the server and never exposed to the client.
-4. Optional: use a **server-only** token (no `NEXT_PUBLIC_*`) so it never gets bundled for the browser. 
+4. Optional: use a **server-only** token (no `NEXT_PUBLIC_*`) so it never gets bundled for the browser.
+5. **SEO (optional):** Set `NEXT_PUBLIC_SITE_URL` to your production URL (e.g. `https://your-app.vercel.app`) so Open Graph, sitemap, and robots use the correct domain.
+6. **Favicon:** Add `favicon.ico` and `apple-touch-icon.png` (180×180) to the `public/` folder for better branding in tabs and when sharing. 

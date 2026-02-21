@@ -20,12 +20,13 @@ const Issues = ({
         height={500}
         priority
         className="size-full object-cover absolute inset-0 -z-10 rounded-lg md:rounded-xl opacity-[0.75] group-hover:opacity-90"
+        aria-hidden
       />
       <div className="absolute inset-0 -z-[1] bg-black/30 rounded-lg md:rounded-xl" aria-hidden />
       <div className="absolute top-2 left-2 max-sm:top-1.5 max-sm:left-1.5">
         <Image
           src={`/icons/issues.svg`}
-          alt=""
+          alt="Issues icon"
           width={80}
           height={80}
           className="size-7 md:size-8"

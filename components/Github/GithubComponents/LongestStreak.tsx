@@ -23,6 +23,7 @@ const LongestStreak = ({
             height={500}
             priority
             className="size-full object-cover absolute inset-0 -z-10 rounded-lg md:rounded-xl group-hover:opacity-100 opacity-[0.88] cursor-pointer"
+            aria-hidden
         />
         <p className="font-modernbold text-xs md:text-sm lg:text-base">Longest Streak</p>
         <Trophy className="size-5 md:size-6 lg:size-8"/>

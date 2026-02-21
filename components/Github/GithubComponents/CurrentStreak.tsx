@@ -25,6 +25,7 @@ const CurrentStreak = ({
         height={500}
         priority
         className="size-full object-cover absolute inset-0 top-1 -z-10 rounded-lg md:rounded-xl opacity-80 group-hover:opacity-100"
+        aria-hidden
       />
       <div className="relative items-center justify-center">
         <div className="absolute inset-1/2 size-16 -z-10 bg-gradient-to-tr from-blue-700/70 blur-[14px] rounded-full to-blue-900/30 transform -translate-x-1/2 -translate-y-1/2 group-hover:from-blue-700/90 group-hover:to-blue-900/70"></div>

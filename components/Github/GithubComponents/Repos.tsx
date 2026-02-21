@@ -15,6 +15,7 @@ const Repos = ({ repos, classname }: { repos: number; classname: string }) => {
         height={500}
         priority
         className="size-full object-cover absolute inset-0 -z-10 rounded-lg md:rounded-xl opacity-70 group-hover:opacity-100"
+        aria-hidden
       />
       <div className="absolute top-1.5 md:top-2 left-1.5 md:left-2">
         <BookMarked className="size-5 md:size-6 lg:size-8" />

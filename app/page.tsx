@@ -79,14 +79,22 @@ function HomeContent() {
 
   return (
     <div className="w-full min-h-screen mx-auto p-5 max-sm:p-0 flex flex-col items-center justify-center overflow-hidden relative">
-      <Link
-        href={`https://github.com/jonathanrao99`}
-        className="cursor-pointer flex items-center justify-start gap-2 z-10 w-full font-modernmono text-zinc-600 hover:text-white/60 px-5 max-sm:py-3"
-      >
-        <h1>GitWrapped 2.0 by @jonathanrao99 </h1>
-        <GithubIcon size={18} />
-      </Link>
-    
+      <header className="flex items-center justify-between w-full z-10 px-5 max-sm:py-3">
+        <Link
+          href="https://github.com/jonathanrao99"
+          className="cursor-pointer flex items-center gap-2 font-modernmono text-zinc-600 hover:text-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent rounded"
+        >
+          <h1>GitWrapped 2.0 by @jonathanrao99</h1>
+          <GithubIcon size={18} aria-hidden />
+        </Link>
+        <Link
+          href="/privacy"
+          className="font-modernmono text-zinc-500 hover:text-white/70 text-sm focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent rounded"
+        >
+          Privacy
+        </Link>
+      </header>
+
     {/* Default background - only show when no user data is loaded */}
     {!hasUserData && (
       <>
@@ -97,6 +105,7 @@ function HomeContent() {
           height={500}
           className="absolute object-cover inset-0 size-full opacity-40"
           priority
+          aria-hidden
         />
         <svg
           className="pointer-events-none isolate z-[999999] size-full absolute inset-0 opacity-30 mix-blend-soft-light"

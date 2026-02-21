@@ -22,6 +22,7 @@ const MostActiveDay = ({
         height={500}
         priority
         className="size-full object-cover absolute inset-0 -z-10 rounded-lg md:rounded-xl opacity-70 group-hover:opacity-100 object-right-bottom"
+        aria-hidden
       />
       <div className="absolute top-2 left-2 max-sm:top-1.5 max-sm:left-1.5">
         <Calendar className="size-7 md:size-8 text-white" />

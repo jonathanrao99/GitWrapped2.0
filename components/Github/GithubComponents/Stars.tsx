@@ -15,6 +15,7 @@ const Stars = ({ classname, stars }: { classname: string; stars: number }) => {
         height={500}
         priority
         className="size-full object-cover absolute inset-0 -z-10 rounded-lg md:rounded-xl opacity-70 group-hover:opacity-90"
+        aria-hidden
       />
       <div className="absolute top-2 left-2 md:top-3 md:left-3">
         <StarsIcon className="size-9 md:size-10" />

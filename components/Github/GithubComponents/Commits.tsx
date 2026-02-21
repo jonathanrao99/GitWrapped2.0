@@ -21,6 +21,7 @@ const Commit = ({
         height={500}
         priority
         className="size-full object-cover absolute inset-0 -z-10 rounded-lg md:rounded-xl opacity-80 group-hover:opacity-100"
+        aria-hidden
       />
       <div className="absolute top-2 left-2 md:top-3 md:left-3">
         <Command className="size-7 md:size-8" />

@@ -47,6 +47,7 @@ const Languages = ({
         height={500}
         priority
         className="size-full object-cover absolute inset-0 -z-10 rounded-lg md:rounded-xl opacity-80 group-hover:opacity-100"
+        aria-hidden
       />
       <div className="absolute inset-0 -z-[1] bg-black/35 rounded-lg md:rounded-xl" aria-hidden />
       <div className="flex flex-col flex-1 min-h-0 p-2 md:p-3">
