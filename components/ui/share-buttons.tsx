@@ -2,21 +2,22 @@
 
 import React, { useState } from 'react';
 import { Button } from './button';
-import { 
-  Share2, 
-  Copy, 
-  Check, 
-  Twitter, 
-  Linkedin, 
-  Facebook, 
+import {
+  Share2,
+  Copy,
+  Check,
+  Twitter,
+  Linkedin,
+  Facebook,
   MessageCircle,
   Mail
 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { UserStats } from '@/types';
 
 interface ShareButtonsProps {
   username: string;
-  userStats: any;
+  userStats: UserStats;
   className?: string;
 }
 
@@ -31,7 +32,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({
     ? `${window.location.origin}/?user=${encodeURIComponent(username)}`
     : '';
 
-  const shareText = `${username}'s GitWrapped: ${userStats['Total Contibutions']} contributions, ${userStats['Current Streak']} day streak, ${userStats.Followers} followers! 🚀`;
+  const shareText = `${username}'s GitWrapped: ${userStats['Total Contributions']} contributions, ${userStats['Current Streak']} day streak, ${userStats.Followers} followers! 🚀`;
 
   const handleCopyLink = async () => {
     try {
@@ -56,8 +57,8 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({
           text: shareText,
           url: shareUrl,
         });
-      } catch (error) {
-        console.log('Share cancelled or failed');
+      } catch {
+        // User cancelled or share failed
       }
     } else {
       handleCopyLink();
@@ -80,6 +81,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({
       <Button
         onClick={handleNativeShare}
         className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+        aria-label="Share GitWrapped"
       >
         <Share2 className="w-4 h-4" />
         Share
@@ -90,6 +92,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({
         onClick={handleCopyLink}
         variant="outline"
         className="flex items-center gap-2"
+        aria-label="Copy share link to clipboard"
       >
         {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
         {copied ? 'Copied!' : ''}
@@ -101,6 +104,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({
           onClick={shareToTwitter}
           size="sm"
           className="bg-[#1DA1F2] hover:bg-[#1a8cd8] text-white"
+          aria-label="Share on Twitter"
         >
           <Twitter className="w-4 h-4" />
         </Button>
@@ -109,6 +113,7 @@ const ShareButtons: React.FC<ShareButtonsProps> = ({
           onClick={shareToLinkedIn}
           size="sm"
           className="bg-[#0077B5] hover:bg-[#006097] text-white"
+          aria-label="Share on LinkedIn"
         >
           <Linkedin className="w-4 h-4" />
         </Button>

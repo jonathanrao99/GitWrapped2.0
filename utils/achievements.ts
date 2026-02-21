@@ -10,11 +10,13 @@ export interface Achievement {
   rarity: 'common' | 'rare' | 'epic' | 'legendary';
 }
 
-export const calculateAchievements = (userStats: any): Achievement[] => {
+import { UserStats } from '@/types';
+
+export const calculateAchievements = (userStats: UserStats): Achievement[] => {
   const achievements: Achievement[] = [];
 
   // Contribution Achievements
-  if (userStats['Total Contibutions'] >= 1000) {
+  if (userStats['Total Contributions'] >= 1000) {
     achievements.push({
       id: 'contributor-1000',
       title: 'Dedicated Developer',
@@ -24,7 +26,7 @@ export const calculateAchievements = (userStats: any): Achievement[] => {
       unlocked: true,
       rarity: 'rare'
     });
-  } else if (userStats['Total Contibutions'] >= 500) {
+  } else if (userStats['Total Contributions'] >= 500) {
     achievements.push({
       id: 'contributor-500',
       title: 'Active Coder',
@@ -32,11 +34,11 @@ export const calculateAchievements = (userStats: any): Achievement[] => {
       icon: '💻',
       category: 'contributions',
       unlocked: true,
-      progress: userStats['Total Contibutions'],
+      progress: userStats['Total Contributions'],
       maxProgress: 1000,
       rarity: 'common'
     });
-  } else if (userStats['Total Contibutions'] >= 100) {
+  } else if (userStats['Total Contributions'] >= 100) {
     achievements.push({
       id: 'contributor-100',
       title: 'Getting Started',
@@ -44,7 +46,7 @@ export const calculateAchievements = (userStats: any): Achievement[] => {
       icon: '⭐',
       category: 'contributions',
       unlocked: true,
-      progress: userStats['Total Contibutions'],
+      progress: userStats['Total Contributions'],
       maxProgress: 500,
       rarity: 'common'
     });
@@ -271,7 +273,6 @@ export const calculateAchievements = (userStats: any): Achievement[] => {
   }
 
   // Perfect Day Achievement (if they have any contributions today)
-  const today = new Date().toISOString().split('T')[0];
   if (userStats['Current Streak'] > 0) {
     achievements.push({
       id: 'perfect-day',
@@ -287,30 +288,15 @@ export const calculateAchievements = (userStats: any): Achievement[] => {
   return achievements;
 };
 
-export const getAchievementRarityColor = (rarity: string): string => {
-  switch (rarity) {
-    case 'legendary':
-      return 'text-yellow-400 border-yellow-400';
-    case 'epic':
-      return 'text-purple-400 border-purple-400';
-    case 'rare':
-      return 'text-blue-400 border-blue-400';
-    case 'common':
-    default:
-      return 'text-gray-400 border-gray-400';
-  }
+const RARITY_STYLES: Record<string, { color: string; bg: string }> = {
+  legendary: { color: 'text-yellow-400 border-yellow-400', bg: 'bg-yellow-400/10' },
+  epic: { color: 'text-purple-400 border-purple-400', bg: 'bg-purple-400/10' },
+  rare: { color: 'text-blue-400 border-blue-400', bg: 'bg-blue-400/10' },
+  common: { color: 'text-gray-400 border-gray-400', bg: 'bg-gray-400/10' },
 };
 
-export const getAchievementRarityBg = (rarity: string): string => {
-  switch (rarity) {
-    case 'legendary':
-      return 'bg-yellow-400/10';
-    case 'epic':
-      return 'bg-purple-400/10';
-    case 'rare':
-      return 'bg-blue-400/10';
-    case 'common':
-    default:
-      return 'bg-gray-400/10';
-  }
-}; 
+export const getAchievementRarityColor = (rarity: string): string =>
+  RARITY_STYLES[rarity]?.color ?? RARITY_STYLES.common.color;
+
+export const getAchievementRarityBg = (rarity: string): string =>
+  RARITY_STYLES[rarity]?.bg ?? RARITY_STYLES.common.bg; 

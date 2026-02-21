@@ -1,9 +1,13 @@
+"use server";
+
 import { UserData, UserStats } from "@/types";
 import { graphQL } from "./graphql";
 import { fetchYearContributions } from "./fetchYearContributions";
+import { getCachedUser, setCachedUser } from "@/lib/cache";
 import {
   calculateCurrentStreak,
   calculateLongestStreak,
+  calculateMostActiveDay,
   calculateTotalContributions,
   formatDate,
 } from "@/utils/calc";
@@ -15,6 +19,7 @@ const userStatsQuery = `
   }
   contributionsCollection {
     totalCommitContributions
+    contributionYears
   }
   repositoriesContributedTo(
     first: 1
@@ -29,7 +34,6 @@ const userStatsQuery = `
     totalCount
   }
   createdAt
-  updatedAt
   repositoriesWithStargazerCount: repositories(
     first: 100
     privacy: PUBLIC
@@ -41,9 +45,6 @@ const userStatsQuery = `
       stargazerCount
     }
   }
-  contributionsCollection {
-    contributionYears
-  }
   avatarUrl
 `;
 
@@ -54,6 +55,9 @@ const fetchUser = async (
     if (!username || username.trim() === '') {
       throw new Error('Username is required');
     }
+    const key = username.trim().toLowerCase();
+    const cached = getCachedUser(key);
+    if (cached) return cached;
 
     const query = `
         query ($username: String!){
@@ -75,10 +79,10 @@ const fetchUser = async (
       throw new Error(`User '${username}' not found`);
     }
 
-    const contibutonYears = data.user.contributionsCollection?.contributionYears || [];
+    const contributionYears = data.user.contributionsCollection?.contributionYears || [];
     let allContributionDays: { date: string; contributionCount: number }[] = [];
 
-    for (const year of contibutonYears) {
+    for (const year of contributionYears) {
       try {
         const yearContributions: { date: string; contributionCount: number }[] =
           await fetchYearContributions(username, Number(year));
@@ -108,6 +112,7 @@ const fetchUser = async (
     } = calculateCurrentStreak(allContributionDays);
     const currentStreakStartDate = formatDate(currentStreakStart);
     const currentStreakEndDate = formatDate(currentStreakEnd);
+    const mostActiveDay = calculateMostActiveDay(allContributionDays);
 
     const userStats: UserStats = {
       Followers: data.user.followers?.totalCount || 0,
@@ -120,19 +125,23 @@ const fetchUser = async (
         (acc, repo) => acc + (repo.stargazerCount || 0),
         0
       ) || 0,
-      "Total Contibutions": total,
+      "Total Contributions": total,
       "Longest Streak": longestStreak,
       "Longest Streak Start": longestStreakStartDate,
       "Longest Streak End": longestStreakEndDate,
       "Current Streak": currentStreak,
       "Current Streak Start": currentStreakStartDate,
       "Current Streak End": currentStreakEndDate,
+      "Most Active Day": mostActiveDay,
       AvatarUrl: data.user.avatarUrl || '',
+      MemberSince: data.user.createdAt
+        ? new Date(data.user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })
+        : null,
     };
 
-    return {
-      userStats,
-    };
+    const result = { userStats };
+    setCachedUser(key, result);
+    return result;
   } catch (error) {
     console.error('Error fetching user data:', error);
     const appError = handleGitHubError(error);

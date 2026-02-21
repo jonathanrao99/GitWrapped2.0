@@ -20,9 +20,18 @@ export class GitWrappedError extends Error {
   }
 }
 
-export const handleGitHubError = (error: any): AppError => {
+function getErrorMessageFromUnknown(error: unknown): string | undefined {
+  if (error instanceof Error) return error.message;
+  if (error && typeof error === 'object' && 'message' in error && typeof (error as { message: unknown }).message === 'string') {
+    return (error as { message: string }).message;
+  }
+  return undefined;
+}
+
+export const handleGitHubError = (error: unknown): AppError => {
+  const message = getErrorMessageFromUnknown(error) ?? '';
   // Network errors
-  if (error.message?.includes('fetch') || error.message?.includes('network')) {
+  if (message.includes('fetch') || message.includes('network')) {
     return {
       type: 'NETWORK',
       message: 'Network connection failed',
@@ -32,7 +41,7 @@ export const handleGitHubError = (error: any): AppError => {
   }
 
   // Authentication errors
-  if (error.message?.includes('401') || error.message?.includes('token')) {
+  if (message.includes('401') || message.includes('token')) {
     return {
       type: 'AUTH',
       message: 'Authentication failed',
@@ -43,7 +52,7 @@ export const handleGitHubError = (error: any): AppError => {
   }
 
   // Rate limiting
-  if (error.message?.includes('rate limit') || error.message?.includes('429')) {
+  if (message.includes('rate limit') || message.includes('429')) {
     return {
       type: 'RATE_LIMIT',
       message: 'Rate limit exceeded',
@@ -54,7 +63,7 @@ export const handleGitHubError = (error: any): AppError => {
   }
 
   // User not found
-  if (error.message?.includes('not found') || error.message?.includes('404')) {
+  if (message.includes('not found') || message.includes('404')) {
     return {
       type: 'NOT_FOUND',
       message: 'User not found',
@@ -65,7 +74,7 @@ export const handleGitHubError = (error: any): AppError => {
   }
 
   // Validation errors
-  if (error.message?.includes('validation') || error.message?.includes('invalid')) {
+  if (message.includes('validation') || message.includes('invalid')) {
     return {
       type: 'VALIDATION',
       message: 'Invalid input',
@@ -81,12 +90,4 @@ export const handleGitHubError = (error: any): AppError => {
     description: 'Please try again or contact support if the problem persists',
     retryable: true
   };
-};
-
-export const getErrorMessage = (error: AppError): string => {
-  return error.description || error.message;
-};
-
-export const shouldRetry = (error: AppError): boolean => {
-  return error.retryable;
 }; 

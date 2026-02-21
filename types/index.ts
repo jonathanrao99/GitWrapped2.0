@@ -1,23 +1,29 @@
 export interface UserStats {
-    Followers: number;
-    Repositories: number;
-    'Pull Requests': number;
-    Issues: number;
-    Commits: number;
-    'Contributed To': number;
-    'Star Earned': number;
-    'Total Contibutions': number;
-    'Longest Streak': number;
-    'Longest Streak Start': string | null;
-    'Longest Streak End': string | null;
-    'Current Streak': number;
-    'Current Streak Start': string | null;
-    'Current Streak End': string | null;
-    AvatarUrl: string;
-    Failure?: any
-  }
+  Followers: number;
+  Repositories: number;
+  'Pull Requests': number;
+  Issues: number;
+  Commits: number;
+  'Contributed To': number;
+  'Star Earned': number;
+  'Total Contributions': number;
+  'Longest Streak': number;
+  'Longest Streak Start': string | null;
+  'Longest Streak End': string | null;
+  'Current Streak': number;
+  'Current Streak Start': string | null;
+  'Current Streak End': string | null;
+  'Most Active Day': string | null;
+  AvatarUrl: string;
+  MemberSince: string | null;
+  Failure?: unknown;
+}
 
-  export interface UserData {
+export interface GraphState {
+  graph: string;
+}
+
+export interface UserData {
     user: {
       followers: { totalCount: number };
       repositoriesWithStargazerCount: {
@@ -29,6 +35,6 @@ export interface UserStats {
       contributionsCollection: { totalCommitContributions: number; contributionYears: string[]; };
       repositoriesContributedTo: { totalCount: number };
       avatarUrl: string;
-    };
-  }
-  
+      createdAt: string;
+  };
+}

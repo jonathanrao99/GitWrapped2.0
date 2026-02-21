@@ -1,5 +1,13 @@
-
 import { graphQL } from "./graphql";
+
+interface ContributionDay {
+  date: string;
+  contributionCount: number;
+}
+
+interface ContributionWeek {
+  contributionDays: ContributionDay[];
+}
 
 export async function fetchYearContributions(
   username: string,
@@ -33,19 +41,24 @@ export async function fetchYearContributions(
       return [];
     }
 
-    const weeks = data.user.contributionsCollection.contributionCalendar?.weeks || [];
+    const weeks: ContributionWeek[] = data.user.contributionsCollection.contributionCalendar?.weeks ?? [];
 
-    const contributionDays: {date: string, contributionCount: number}[] = [];
+    const contributionDays: { date: string; contributionCount: number }[] = [];
+    const yearStart = `${year}-01-01`;
+    const yearEnd = `${year}-12-31`;
 
-    weeks.forEach((week: any) => {
+    for (const week of weeks) {
       if (week.contributionDays) {
-        week.contributionDays.forEach((day: any) => {
-          if (day && day.date && typeof day.contributionCount === 'number') {
-            contributionDays.push({date: day.date, contributionCount: day.contributionCount});
+        for (const day of week.contributionDays) {
+          if (day?.date != null && typeof day.contributionCount === 'number') {
+            const d = day.date.slice(0, 10);
+            if (d >= yearStart && d <= yearEnd) {
+              contributionDays.push({ date: d, contributionCount: day.contributionCount });
+            }
           }
-        });
+        }
       }
-    });
+    }
 
     return contributionDays;
   } catch (error) {

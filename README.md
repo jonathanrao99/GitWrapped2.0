@@ -35,7 +35,7 @@
 - **Followers** - GitHub follower count
 - **Achievements** - Unlocked achievement count
 - **Top Languages** - Most used programming languages
-- **Peak Hours** - Your most active coding times
+- **Most Active Day** - Day of the week with the most contributions
 
 ### 🎨 **Visual Enhancements**
 - **Gradient backgrounds** for each component

@@ -1,5 +1,3 @@
-import { randomBytes } from "crypto";
-
 export const calculateTotalContributions = (
   contributionDays: { date: string; contributionCount: number }[]
 ): { total: number } => {
@@ -105,6 +103,22 @@ export const calculateCurrentStreak = (
   return { currentStreak, startDate: streakStartDate, endDate: streakEndDate };
 };
 
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const;
+
+export const calculateMostActiveDay = (
+  contributionDays: { date: string; contributionCount: number }[]
+): string | null => {
+  if (contributionDays.length === 0) return null;
+  const byDay = [0, 1, 2, 3, 4, 5, 6].map((dayOfWeek) => ({
+    dayOfWeek,
+    total: contributionDays
+      .filter((d) => new Date(d.date).getDay() === dayOfWeek)
+      .reduce((sum, d) => sum + d.contributionCount, 0),
+  }));
+  const best = byDay.reduce((a, b) => (b.total > a.total ? b : a));
+  return best.total > 0 ? DAY_NAMES[best.dayOfWeek] : null;
+};
+
 export const formatDate = (dateString: string | null): string | null => {
   if (!dateString) return null;
   const date = new Date(dateString);
@@ -117,13 +131,6 @@ export const formatDate = (dateString: string | null): string | null => {
   }
   return date.toLocaleDateString("en-US", options);
 };
-
-export function generateRandomString(length: number) {
-  return randomBytes(Math.ceil(length / 2))
-    .toString("hex")
-    .slice(0, length);
-}
-
 
 export function formatNumber(num: number): string {
   if (num >= 1000) {

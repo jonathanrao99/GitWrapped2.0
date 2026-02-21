@@ -19,9 +19,9 @@
    cp .env.local.example .env.local
    ```
 
-2. Edit `.env.local` and replace the placeholder:
+2. Edit `.env.local` and add your token (use `GITHUB_TOKEN` so it stays server-only; `NEXT_PUBLIC_GITHUB_TOKEN` is also supported):
    ```
-   NEXT_PUBLIC_GITHUB_TOKEN=ghp_your_actual_token_here
+   GITHUB_TOKEN=ghp_your_actual_token_here
    ```
 
 ## Step 3: Run the Application
@@ -35,6 +35,7 @@ Then open [http://localhost:3000](http://localhost:3000)
 ## Troubleshooting
 
 ### Still getting 401 errors?
+- Use `GITHUB_TOKEN` in `.env.local` (not `NEXT_PUBLIC_*`) so the token is never sent to the browser.
 - Make sure you copied the entire token (it starts with `ghp_`)
 - Check that the token hasn't expired
 - Verify the scopes are correct
@@ -44,4 +45,12 @@ Then open [http://localhost:3000](http://localhost:3000)
 - Make sure the username is spelled correctly
 
 ### Need help?
-Check the main README.md for more detailed instructions. 
+Check the main README.md for more detailed instructions.
+
+## Deploy (e.g. Vercel)
+
+1. Push your repo to GitHub and import the project in [Vercel](https://vercel.com).
+2. In the project **Settings → Environment Variables**, add:
+   - `GITHUB_TOKEN` = your GitHub Personal Access Token (same scopes: read:user, read:email, read:org).
+3. Redeploy. The app uses server actions, so the token is only used on the server and never exposed to the client.
+4. Optional: use a **server-only** token (no `NEXT_PUBLIC_*`) so it never gets bundled for the browser. 

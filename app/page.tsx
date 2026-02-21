@@ -7,12 +7,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userStatsState, usernameState, loadingState, graphState } from "@/Recoil/State/atom";
-import { useEffect, Suspense } from "react";
+import { useEffect, useCallback, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import fetchUser from "@/actions/fetchUser";
 import fetchGraph from "@/actions/fetchGraph";
 import { toast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 import ErrorBoundary from "@/components/ui/error-boundary";
+import { GitWrappedError } from "@/utils/errorHandler";
 
 function HomeContent() {
   const userStats = useRecoilValue(userStatsState);
@@ -23,26 +25,18 @@ function HomeContent() {
   const hasUserData = userStats && Object.keys(userStats).length > 0;
   const searchParams = useSearchParams();
 
-  // Handle URL-based sharing
-  useEffect(() => {
-    const usernameFromUrl = searchParams.get('user');
-    if (usernameFromUrl && !hasUserData) {
-      loadUserData(usernameFromUrl);
-    }
-  }, [searchParams, hasUserData]);
-
-  const loadUserData = async (username: string) => {
+  const loadUserData = useCallback(async (username: string) => {
     try {
       setLoading(true);
       toast({ title: "Loading from URL...", generating: true });
       setUsername(username);
-      
+
       const { userStats } = await fetchUser(username);
-      const graph = await fetchGraph(username);
-      
       setUserStats(userStats);
+      setGraphState(null);
+      const graph = await fetchGraph(username);
       setGraphState(graph);
-      
+
       if (graph.graph === "No contributions this year") {
         toast({
           title: "No contributions found",
@@ -53,15 +47,35 @@ function HomeContent() {
       }
     } catch (error) {
       console.error('Error loading from URL:', error);
+      const title = "Error loading user";
+      const description =
+        error instanceof GitWrappedError
+          ? error.message
+          : error instanceof Error
+            ? error.message
+            : "Failed to load user data. Check your GitHub token in .env.local and try again.";
       toast({
-        title: "Error loading user",
-        description: "Failed to load user data from URL",
+        title,
+        description,
         variant: "destructive",
+        action: (
+          <ToastAction onClick={() => loadUserData(username)}>
+            Retry
+          </ToastAction>
+        ),
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [setLoading, setUsername, setUserStats, setGraphState]);
+
+  // Handle URL-based sharing
+  useEffect(() => {
+    const usernameFromUrl = searchParams.get('user');
+    if (usernameFromUrl && !hasUserData) {
+      loadUserData(usernameFromUrl);
+    }
+  }, [searchParams, hasUserData, loadUserData]);
 
   return (
     <div className="w-full min-h-screen mx-auto p-5 max-sm:p-0 flex flex-col items-center justify-center overflow-hidden relative">
